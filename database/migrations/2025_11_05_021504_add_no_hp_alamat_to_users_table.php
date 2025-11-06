@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Tambahkan kolom nomor HP dan alamat
-            $table->string('no_hp')->nullable()->after('email'); // setelah kolom email
-            $table->text('alamat')->nullable()->after('no_hp');  // setelah kolom no_hp
+            $table->string('no_hp')->nullable();
+            $table->text('alamat')->nullable();  
         });
     }
 
@@ -24,7 +23,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Hapus kolom jika rollback dijalankan
             $table->dropColumn(['no_hp', 'alamat']);
         });
     }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PencarianController;
 use App\Http\Controllers\PeminjamanController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -72,3 +73,12 @@ Route::post('/pinjam-buku', [PeminjamanController::class, 'store'])
 Route::get('/peminjaman-saya', [PeminjamanController::class, 'riwayat'])
     ->middleware(['auth', 'verified'])
     ->name('peminjaman.riwayat');
+
+// ================== Profil (Edit + Ubah Foto) ==================
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // 🔹 Tambahan baru untuk ubah foto profil
+    Route::post('/profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+});
