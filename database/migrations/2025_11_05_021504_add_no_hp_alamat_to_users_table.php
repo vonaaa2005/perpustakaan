@@ -7,23 +7,30 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Jalankan migrasi untuk menambah kolom baru pada tabel users.
+     * Jalankan migrasi untuk menambahkan kolom no_hp dan alamat pada tabel users.
      */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('no_hp')->nullable();
-            $table->text('alamat')->nullable();  
+            // Tambahkan kolom baru
+            $table->string('no_hp')->nullable()->after('email'); // letakkan setelah kolom email
+            $table->text('alamat')->nullable()->after('no_hp');  // letakkan setelah no_hp
         });
     }
 
     /**
-     * Batalkan perubahan jika migrasi di-rollback.
+     * Batalkan migrasi ini (hapus kolom no_hp dan alamat).
      */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['no_hp', 'alamat']);
+            // Hapus kolom yang sudah ditambahkan
+            if (Schema::hasColumn('users', 'no_hp')) {
+                $table->dropColumn('no_hp');
+            }
+            if (Schema::hasColumn('users', 'alamat')) {
+                $table->dropColumn('alamat');
+            }
         });
     }
 };
