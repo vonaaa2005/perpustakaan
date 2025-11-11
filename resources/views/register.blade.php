@@ -12,24 +12,24 @@
     <div class="card shadow-lg p-4 rounded-4" style="max-width: 750px; margin: 0 auto;">
         <h3 class="mb-4 text-center text-primary fw-bold">Form Registrasi User</h3>
 
-        <?php if (session('success')): ?>
+        @if (session('success'))
             <div class="alert alert-success">
-                <?= session('success'); ?>
+                {{ session('success') }}
             </div>
-        <?php endif; ?>
+        @endif
 
-        <?php if ($errors->any()): ?>
+        @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
-                    <?php foreach ($errors->all() as $error): ?>
-                        <li><?= $error; ?></li>
-                    <?php endforeach; ?>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
                 </ul>
             </div>
-        <?php endif; ?>
+        @endif
 
-        <form action="<?= route('register.store'); ?>" method="POST">
-            <?= csrf_field(); ?>
+        <form action="{{ route('register.store') }}" method="POST">
+            @csrf
 
             <div class="row mb-3">
                 <div class="col-md-6">

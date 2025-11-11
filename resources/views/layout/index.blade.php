@@ -111,25 +111,42 @@
               <!--begin::Col-->
               <div class="col-12">
               <!--begin::Small Box Widget 3-->
-              <div class="small-box text-bg-primary" data-bs-toggle="modal" data-bs-target="#registerModal" style="cursor: pointer;">
-                <div class="inner text-light">
-                  <h3>44</h3>
-                  <p>User Registrations</p>
-                </div>
-                <svg
-                  class="small-box-icon"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
-                  ></path>
-                </svg>
-                <div class="small-box-footer text-light text-decoration-none fw-semibold">
-                  Klik untuk registrasi <i class="bi bi-person-plus"></i>
-                </div>
+              <div class="small-box text-bg-primary p-3 rounded-3 shadow-sm" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="<?= Auth::check() ? '' : '#registerModal' ?>" 
+                  style="cursor: pointer;">
+
+                  <div class="inner text-light">
+                      <h5 class="fw-bold mb-1">
+                          <?php if(Auth::check()): ?>
+                              Selamat Datang, <?= Auth::user()->name; ?>
+                          <?php else: ?>
+                              Total Pengguna: <?= \App\Models\User::count(); ?>
+                          <?php endif; ?>
+                      </h5>
+
+                      <p class="mb-0" style="font-size: 14px;">
+                          <?php if(Auth::check()): ?>
+                              Senang melihatmu kembali di E-Library 📚
+                          <?php else: ?>
+                              Silakan daftar untuk mulai menggunakan sistem.
+                          <?php endif; ?>
+                      </p>
+                  </div>
+
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" 
+                      xmlns="http://www.w3.org/2000/svg" aria-hidden="true" 
+                      style="position:absolute; top:10px; right:10px; width:45px; opacity:0.25;">
+                      <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path>
+                  </svg>
+
+                  <div class="small-box-footer text-light fw-semibold mt-2" style="font-size: 13px;">
+                      <?php if(!Auth::check()): ?>
+                          Klik untuk registrasi <i class="bi bi-person-plus"></i>
+                      <?php else: ?>
+                          Anda sudah login <i class="bi bi-check-circle"></i>
+                      <?php endif; ?>
+                  </div>
               </div>
               <!--end::Small Box Widget 3-->
 
@@ -146,36 +163,32 @@
 
                     <!-- Body Modal -->
                     <div class="modal-body bg-light">
-                      <form>
+                      <form action="{{ route('register.store') }}" method="POST">
+                        @csrf
                         <div class="row">
-                          <div class="col-md-6 mb-3">
-                            <label for="nama" class="form-label fw-semibold">Nama</label>
-                            <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap">
+                          <div class="mb-3">
+                            <label for="name" class="form-label">Nama Lengkap</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama lengkap" required>
                           </div>
-
-                          <div class="col-md-6 mb-3">
-                            <label for="alamat" class="form-label fw-semibold">Alamat</label>
-                            <input type="text" class="form-control" id="alamat" placeholder="Masukkan alamat lengkap">
+                          <div class="mb-3">
+                            <label for="email" class="form-label">Alamat Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan email aktif" required>
                           </div>
-
-                          <div class="col-md-6 mb-3">
-                            <label for="nohp" class="form-label fw-semibold">No. Handphone</label>
-                            <input type="text" class="form-control" id="nohp" placeholder="08xxxxxxxxxx">
+                          <div class="mb-3">
+                          <label for="no_hp" class="form-label">Nomor HP</label>
+                          <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukkan nomor HP aktif" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="alamat" class="form-label">Alamat</label>
+                          <textarea class="form-control" id="alamat" name="alamat" rows="2" placeholder="Masukkan alamat lengkap" required></textarea>
+                        </div>
+                          <div class="mb-3">
+                            <label for="password" class="form-label">Kata Sandi</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Minimal 6 karakter" required>
                           </div>
-
-                          <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label fw-semibold">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Masukkan email">
-                          </div>
-
-                          <div class="col-md-6 mb-3">
-                            <label for="password" class="form-label fw-semibold">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Masukkan password">
-                          </div>
-
-                          <div class="col-md-6 mb-3">
-                            <label for="confirm_password" class="form-label fw-semibold">Konfirmasi Password</label>
-                            <input type="password" class="form-control" id="confirm_password" placeholder="Ulangi password">
+                          <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Konfirmasi Kata Sandi</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi kata sandi" required>
                           </div>
                         </div>
 
@@ -191,7 +204,7 @@
                 </div>
               </div>
               <!-- ========== END MODAL FORM REGISTRASI ========== -->
-               
+                            
               </div>
               <!--end::Col-->
                 <!--end::Small Box Widget 4-->

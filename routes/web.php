@@ -23,30 +23,30 @@ Route::get('/', function () {
 
 // ================== Registrasi & Verifikasi ==================
 
-// Halaman register (tampilan form)
+// 🔹 Halaman form registrasi (bisa juga dari modal)
 Route::get('/register', function () {
     return view('register');
 })->name('register');
 
-// Proses simpan data registrasi
+// 🔹 Proses simpan data registrasi
 Route::post('/register', [UserController::class, 'store'])->name('register.store');
 
-// Menampilkan daftar user (opsional)
+// 🔹 Menampilkan daftar user (opsional)
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-// Halaman verifikasi email
+// 🔹 Halaman verifikasi email
 Route::get('/email/verify', function () {
     return view('auth.verify-email'); 
     // Buat file: resources/views/auth/verify-email.blade.php
 })->middleware('auth')->name('verification.notice');
 
-// Link verifikasi yang dikirim ke email user
+// 🔹 Link verifikasi yang dikirim ke email user
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill(); // menandai email user sudah terverifikasi
     return redirect('/')->with('success', 'Email berhasil diverifikasi!');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-// Kirim ulang link verifikasi jika belum menerima
+// 🔹 Kirim ulang link verifikasi jika belum menerima
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('message', 'Link verifikasi baru telah dikirim ke email Anda!');
@@ -62,23 +62,17 @@ Route::get('/pencarian', [PencarianController::class, 'index'])->name('pencarian
 Route::get('/hasil-pencarian', [PencarianController::class, 'pencarian'])->name('pencarian.hasil');
 
 // ================== Peminjaman ==================
-Route::get('/pinjam-buku', [PeminjamanController::class, 'form'])
-    ->middleware(['auth', 'verified']) // hanya bisa diakses oleh user login & verifikasi
-    ->name('peminjaman.form');
-
-Route::post('/pinjam-buku', [PeminjamanController::class, 'store'])
-    ->middleware(['auth', 'verified'])
-    ->name('peminjaman.store');
-
-Route::get('/peminjaman-saya', [PeminjamanController::class, 'riwayat'])
-    ->middleware(['auth', 'verified'])
-    ->name('peminjaman.riwayat');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/pinjam-buku', [PeminjamanController::class, 'form'])->name('peminjaman.form');
+    Route::post('/pinjam-buku', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+    Route::get('/peminjaman-saya', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat');
+});
 
 // ================== Profil (Edit + Ubah Foto) ==================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // 🔹 Tambahan baru untuk ubah foto profil
+    // 🔹 Tambahan: ubah foto profil
     Route::post('/profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
 });
